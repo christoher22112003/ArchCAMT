@@ -42,8 +42,8 @@ Este repositorio contiene mis **dotfiles** (archivos de configuración) para Arc
    curl -LO https://raw.githubusercontent.com/gh0stzk/dotfiles/master/RiceInstaller
    
    # Tal vez un URL mas corto?
-
-    curl -LO http://gh0stzk.github.io/dotfiles/RiceInstaller
+   
+   curl -LO http://gh0stzk.github.io/dotfiles/RiceInstaller
 
 2. **Ahora déle permisos de ejecución**
    ```bash
