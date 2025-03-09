@@ -1,0 +1,251 @@
+#                                                                                                                             ,----, 
+#                                                                                                               ____        ,/   .`| 
+#                           ,---,          ,-.                                  ,---,         ,----..          ,'  , `.    ,`   .'  : 
+#                         ,--.' |      ,--/ /|       ,---,                     '  .' \       /   /   \      ,-+-,.' _ |  ;    ;     / 
+#                         |  |  :    ,--. :/ |     ,---.'|             ,---,. /  ;    '.    |   :     :  ,-+-. ;   , ||.'___,/    ,'  
+#   .--.--.    ,--,  ,--, :  :  :    :  : ' /      |   | :           ,'  .' |:  :       \   .   |  ;. / ,--.'|'   |  ;||    :     |   
+#  /  /    '   |'. \/ .`| :  |  |,--.|  '  /       |   | |   ,---. ,---.'   ,:  |   /\   \  .   ; /--` |   |  ,', |  ':;    |.';  ;   
+# |  :  /`./   '  \/  / ; |  :  '   |'  |  :     ,--.__| |  /     \|   |    ||  :  ' ;.   : ;   | ;    |   | /  | |  ||`----'  |  |   
+# |  :  ;_      \  \.' /  |  |   /' :|  |   \   /   ,'   | /    / ':   :  .' |  |  ;/  \   \|   : |    '   | :  | :  |,    '   :  ;   
+#  \  \    `.    \  ;  ;  '  :  | | |'  : |. \ .   '  /  |.    ' / :   |.'   '  :  | \  \ ,'.   | '___ ;   . |  ; |--'     |   |  '   
+#   `----.   \  / \  \  \ |  |  ' | :|  | ' \ \'   ; |:  |'   ; :__`---'     |  |  '  '--'  '   ; : .'||   : |  | ,        '   :  |   
+#  /  /`--'  /./__;   ;  \|  :  :_:,''  : |--' |   | '/  ''   | '.'|         |  :  :        '   | '/  :|   : '  |/         ;   |.'    
+# '--'.     / |   :/\  \ ;|  | ,'    ;  |,'    |   :    :||   :    :         |  | ,'        |   :    / ;   | |`-'          '---'      
+#   `--'---'  `---'  `--` `--''      '--'       \   \  /   \   \  /          `--''           \   \ .'  |   ;/                         
+#                                                `----'     `----'                            `---`    '---'                          
+                                                                                                                                    
+
+                    
+        
+# Show help
+alt + F1
+	OpenApps --KeyHelp
+
+############################
+# ----- Applications ----- #
+############################
+
+_________________________
+# ----- Main Apps ----- #
+_________________________
+
+# Open Terminal (Normal & Floating)
+super + {_,alt + }Return
+	kitty
+
+# App launcher
+super + @space
+	OpenApps --menu
+
+# Theme Selector
+alt + @space
+	RiceSelector
+
+_________________________
+# ----- Your Apps ----- #
+_________________________
+
+# Apps (browser, editor, filemanager)
+super + {f,e}
+	OpenApps --{browser,editor}
+
+# Terminal apps (yazi, nvim, music)
+super + {y,v,m}
+	OpenApps --{yazi,nvim,music}
+
+# Media apps (Pavucontrol, Telegram, Whatsapp)
+super + {p,t,w}
+	OpenApps --{soundcontrol,telegram,whats}
+
+# Spotify
+super + s
+	spotify
+
+super + b
+	bitwarden-desktop & sleep 0.5 && bspc node -t floating && bspc node -v 0 0 -$(($(bspc query -M -m focused | cut -d 'x' -f 1) / 2 - 500)) -$(($(bspc query -M -m focused | cut -d 'x' -f 2) / 2 - 285)) && bspc node -z right 1000 570
+
+
+_________________________
+# ----- Rofi Applets ----- #
+_________________________
+
+#Terminal Selector
+super + alt + t
+	Term --selecterm
+
+# Wallpaper selector
+super + alt + w
+	WallSelect
+
+# Mount Android phones
+super + alt + a
+	OpenApps --android
+
+# Network Manager
+super + alt + n
+	OpenApps --netmanager
+
+# Bluetooth
+super + alt + b
+	OpenApps --bluetooth
+
+# Clipboard
+super + alt + c
+	OpenApps --clipboard
+
+# Screenshot
+Print
+    OpenApps --screenshot
+
+# PowerMenu
+super + alt + p
+	OpenApps --powermenu
+
+# Keyboard Layout Applet
+super + alt + k
+	OpenApps --keyboard
+
+# ----- Environment Apps ----- #
+
+# Scratchpad
+super + alt + o
+	OpenApps --scratch
+
+# Yazi Scratchpad
+super + alt + y
+	OpenApps --yaziscratch
+
+# jgmenu
+~button3
+  xqp 0 $(xdo id -N Bspwm -n root) && jgmenu --csv-file=~/.config/bspwm/src/config/jgmenu.txt --config-file=~/.config/bspwm/src/config/jgmenurc
+
+# Power off, Reboot, Log out, Lockscreen, kill an app
+ctrl + super + alt + {p,r,q,l,k,s}
+	{systemctl poweroff, systemctl reboot,bspc quit,ScreenLocker,xkill,SoftReload}
+
+# Hide/Show Bar (Polybar and/or eww)
+super + alt + {h,u}
+	HideBar {-h,-u}
+
+# Change transparency on focused window
+ctrl + alt + {plus,minus,t}
+	picom-trans {-c -3,-c +3,-c -d}
+
+# Manage brightness
+XF86MonBrightness{Up,Down}
+	sh Brightness {up,down}
+
+# Volume control
+XF86Audio{RaiseVolume,LowerVolume,Mute}
+	Volume{ --inc, --dec, --toggle}
+
+# Music Control
+XF86Audio{Next,Prev,Play,Stop}
+	MediaControl {--next,--previous,--toggle,--stop}
+
+#####################
+# ----- Bspwm ----- #
+#####################
+
+# Reload BSPWM
+super + alt + r
+	bspc wm -r
+
+# Close/Kill node
+super + {_,shift + }c
+	bspc node -{c,k}
+
+# Reload sxhkd Keybinds
+super + Escape
+	pkill -USR1 -x sxhkd; notify-send -u low -i ~/.config/bspwm/src/assets/reload.svg 'sxhkd' 'The configuration file has been reloaded successfully!'
+
+# ----- Node states and flags ----- #
+
+# Set the node state
+alt + {t,shift + t,a,f}
+	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
+
+# Set the node flags
+alt + {m,x,s,p}
+	bspc node -g {marked,locked,sticky,private}
+
+# Hide/Unhide node
+alt + h
+	sh -c 'NHidden=$(bspc query -N -n .hidden -d focused); \
+	if [ -z "$NHidden" ]; then bspc node focused -g hidden=on; \
+	else bspc node "$NHidden" -g hidden=off; fi'
+
+# ----- Focus/Swap Nodes ----- #
+
+# Rotate desktop
+super + Tab
+	bspc node @/ --rotate {90,-90}
+
+# Switch workspace
+super + {Left,Right}
+	bspc desktop -f {prev,next}
+
+# Focus or send to the given desktop
+super + {_,ctrl + }{1-9,0}
+	bspc {desktop -f,node -d} '^{1-9,10}'
+
+# Send focused Node to workspace directionally
+super + ctrl + {Left,Right}
+	bspc node -d {prev,next} '--follow'
+
+# Cycle focus through nodes.
+ctrl + Tab
+	bspc node -f next.local.!hidden.window
+
+# Swap Nodes
+ctrl + shift + {Left,Down,Up,Right}
+	bspc node -s {west,south,north,east}.local
+
+# Focus the last node/desktop
+ctrl + shift {comma,period}
+	bspc {node,desktop} -f last
+
+# Preselect the direction (horizontal, vertical or cancel)
+super + ctrl {h,v,q}
+	bspc node -p {east,south,cancel}
+
+# ----- Expand/Shrink Nodes ----- #
+
+# Expand node
+super + alt {Left,Down,Up,Right}
+	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+
+# Shrink node
+super + shift {Left,Down,Up,Right}
+	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
+
+# Move floating window
+alt + shift {Left,Down,Up,Right}
+	bspc node -v {-20 0,0 20,0 -20,20 0}
+
+#############################
+# ----- Perzonalidado -----#
+#############################
+
+# Aumentar brillo del teclado retroiluminado
+XF86KbdBrightnessUp
+    sh -c 'echo $(( $(cat /sys/class/leds/*kbd_backlight/brightness) + 1 )) | sudo tee /sys/class/leds/*kbd_backlight/brightness'
+
+# Disminuir brillo del teclado retroiluminado
+XF86KbdBrightnessDown
+    sh -c 'echo $(( $(cat /sys/class/leds/*kbd_backlight/brightness) - 1 )) | sudo tee /sys/class/leds/*kbd_backlight/brightness'
+
+# Aumentar la tasa de refresco a 300 Hz
+ctrl + Home
+    xrandr --output DP-2 --mode 1920x1080 --rate 300
+
+ctrl + alt + shift + Up
+    xrandr --output DP-2 --mode 1920x1080 --rate 300
+
+# Disminuir la tasa de refresco a 144 Hz
+ctrl + End
+    xrandr --output DP-2 --mode 1920x1080 --rate 60
+
+ctrl + alt + shift + Down
+    xrandr --output DP-2 --mode 1920x1080 --rate 60
+
