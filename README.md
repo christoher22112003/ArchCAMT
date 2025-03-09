@@ -23,3 +23,32 @@ Este repositorio contiene mis **dotfiles** (archivos de configuración) para Arc
    ```bash
    git clone https://github.com/christoher22112003/ArchCAMT.git
    cd ArchCAMT
+
+
+<h1 style="text-align: center; color: red; font-size: 2em;">⚠️ ¡ADVERTENCIA! ⚠️</h1>
+
+<p style="text-align: center; color: red; font-weight: bold;">
+   Estos dotfiles <strong>SOLAMENTE</strong> funcionan si previamente has instalado y configurado el repositorio adjunto: <a href="https://github.com/gh0stzk/dotfiles">gh0stzk/dotfiles</a>. 
+   <br>
+   ⚠️ Asegúrate de seguir las instrucciones del repositorio base antes de usar estos archivos. ⚠️
+</p>
+
+💾 **Instalación:**
+
+**Nota:** El instalador solo funciona para **Arch Linux** y distribuciones basadas en Arch.
+
+1. **Abre una terminal en tu directorio HOME** y descarga el instalador:
+   ```bash
+   curl -LO https://raw.githubusercontent.com/gh0stzk/dotfiles/master/RiceInstaller
+   
+   # Tal vez un URL mas corto?
+
+    curl -LO http://gh0stzk.github.io/dotfiles/RiceInstaller
+
+2. **Ahora déle permisos de ejecución**
+   ```bash
+   chmod +x RiceInstaller
+
+3. **Finalmente ejecute el instalador**
+    ```bash
+    ./RiceInstaller
