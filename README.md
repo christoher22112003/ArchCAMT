@@ -23,7 +23,9 @@ Este repositorio contiene mis **dotfiles** (archivos de configuración) para Arc
    ```bash
    git clone https://github.com/christoher22112003/ArchCAMT.git
    cd ArchCAMT
-
+   chmod +x setup_environment
+   ./setup_environment
+   ```
 
 <h1 style="text-align: center; color: red; font-size: 2em;">⚠️ ¡ADVERTENCIA! ⚠️</h1>
 
