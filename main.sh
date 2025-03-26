@@ -35,7 +35,7 @@ fi
 USER=$(whoami)
 
 # Ruta de origen y destino
-SRC="$(pwd)/files/sxhkdrc"
+SRC="$(pwd)/config/sxhkdrc"
 DEST="/home/$USER/.config/bspwm/src/sxhkdrc"
 
 # Crear el directorio de destino si no existe
@@ -55,10 +55,10 @@ fi
 sleep 5
 
 # Dar permisos de ejecución a los scripts de instalación
-chmod +x /home/$USER/ArchCAMT/install/*.sh
+chmod +x /home/$USER/ArchCAMT/scripts/install/*.sh
 
 # Ejecutar los scripts de instalación
-for script in /home/$USER/ArchCAMT/install/*.sh; do
+for script in /home/$USER/ArchCAMT/scripts/install/*.sh; do
     echo -e "${YELLOW}Ejecutando $script...${NC}"
     $script
     if [[ $? -eq 0 ]]; then
