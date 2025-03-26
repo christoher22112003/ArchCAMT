@@ -46,6 +46,10 @@ cp $SRC $DEST
 
 if [[ $? -eq 0 ]]; then
     echo -e "${GREEN}Archivo copiado a $DEST correctamente.${NC}"
+    # Configurar sxhkd para que use el archivo copiado
+    pkill -x sxhkd
+    sxhkd -c $DEST &
+    echo -e "${GREEN}sxhkd configurado para usar $DEST y recargado correctamente.${NC}"
 else
     echo -e "${RED}Error al copiar el archivo a $DEST.${NC}"
     exit 1

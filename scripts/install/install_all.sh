@@ -20,12 +20,6 @@ execute_command() {
 # Actualizar los repositorios
 execute_command "sudo pacman -Syu --noconfirm"
 
-# Habilitar el repositorio multilib
-execute_command "sudo sed -i '/\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"
-
-# Instalar Steam
-execute_command "echo -e '2\n' | sudo pacman -S --noconfirm steam"
-
 # Instalar NVIDIA drivers y configuración
 execute_command "sudo pacman -S --noconfirm nvidia nvidia-settings"
 
@@ -40,6 +34,12 @@ execute_command "nmcli dev wifi connect 'MinosÉacoRadamantis' password '7t&A9Mc
 
 # Instalar pavucontrol y blueman
 execute_command "sudo pacman -S --noconfirm pavucontrol blueman"
+
+# Habilitar el repositorio multilib
+execute_command "sudo sed -i '/\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"
+
+# Instalar Steam
+execute_command "echo -e '2\n' | sudo pacman -S --noconfirm steam"
 
 # Instalar asusctl
 execute_command "sudo pacman -S --noconfirm asusctl"
