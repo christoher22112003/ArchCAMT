@@ -78,14 +78,29 @@ chmod +x /home/$USER/ArchCAMT/scripts/install/*.sh
 # Ejecutar los scripts de instalación en orden
 execute_scripts "/home/$USER/ArchCAMT/scripts/install"
 
-# Dar permisos de ejecución al script consolidado
-chmod +x /home/$USER/ArchCAMT/scripts/install/install_all.sh
-
 # Ejecutar el script consolidado
 echo -e "${YELLOW}Ejecutando el script de instalación consolidado...${NC}"
 if bash /home/$USER/ArchCAMT/scripts/install/install_all.sh; then
     echo -e "${GREEN}Script de instalación consolidado ejecutado correctamente.${NC}"
 else
     echo -e "${RED}Error al ejecutar el script de instalación consolidado.${NC}"
+    exit 1
+fi
+
+# Ejecutar RiceInstaller
+echo -e "${YELLOW}Ejecutando RiceInstaller...${NC}"
+if bash /home/$USER/ArchCAMT/scripts/install/rice_installer.sh; then
+    echo -e "${GREEN}RiceInstaller ejecutado correctamente.${NC}"
+else
+    echo -e "${RED}Error al ejecutar RiceInstaller.${NC}"
+    exit 1
+fi
+
+# Ejecutar configuración de LightDM
+echo -e "${YELLOW}Ejecutando configuración de LightDM...${NC}"
+if bash /home/$USER/ArchCAMT/scripts/install/lightdm_setup.sh; then
+    echo -e "${GREEN}LightDM configurado correctamente.${NC}"
+else
+    echo -e "${RED}Error al configurar LightDM.${NC}"
     exit 1
 fi

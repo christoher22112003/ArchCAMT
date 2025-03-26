@@ -44,4 +44,7 @@ execute_command "echo -e '2\n' | sudo pacman -S --noconfirm steam"
 # Instalar asusctl
 execute_command "sudo pacman -S --noconfirm asusctl"
 
+# Instalar Visual Studio Code
+execute_command "paru -S --noconfirm visual-studio-code-bin"
+
 echo -e "${GREEN}Todos los programas han sido instalados correctamente.${NC}"
