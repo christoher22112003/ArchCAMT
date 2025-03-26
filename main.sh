@@ -54,16 +54,22 @@ fi
 # Esperar 5 segundos
 sleep 5
 
+# Function to execute installation scripts
+execute_scripts() {
+    local scripts_path=$1
+    for script in "$scripts_path"/*.sh; do
+        echo -e "${YELLOW}Ejecutando $script...${NC}"
+        if bash "$script"; then
+            echo -e "${GREEN}$script ejecutado correctamente.${NC}"
+        else
+            echo -e "${RED}Error al ejecutar $script.${NC}"
+            exit 1
+        fi
+    done
+}
+
 # Dar permisos de ejecución a los scripts de instalación
 chmod +x /home/$USER/ArchCAMT/scripts/install/*.sh
 
-# Ejecutar los scripts de instalación
-for script in /home/$USER/ArchCAMT/scripts/install/*.sh; do
-    echo -e "${YELLOW}Ejecutando $script...${NC}"
-    $script
-    if [[ $? -eq 0 ]]; then
-        echo -e "${GREEN}$script ejecutado correctamente.${NC}"
-    else
-        echo -e "${RED}Error al ejecutar $script.${NC}"
-    fi
-done
+# Ejecutar los scripts de instalación en orden
+execute_scripts "/home/$USER/ArchCAMT/scripts/install"

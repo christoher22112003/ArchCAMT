@@ -1,21 +1,13 @@
 # Cleanup Notes
 
-## Cambios realizados
-1. **Reorganización de archivos:**
-   - Moved installation scripts to `scripts/install/`.
-   - Moved configuration files to `config/`.
+## Optimized Script Execution
 
-2. **Archivos eliminados:**
-   - Ningún archivo identificado como obsoleto en esta revisión.
+### Title: Modularized Script Execution
+**Description:** The script execution process in `main.sh` has been modularized using a function (`execute_scripts`). This ensures better readability and maintainability while preserving the specific order of execution. Additionally, the output is now color-coded:
+- **Green:** Indicates successful execution of a script.
+- **Red:** Indicates an error during execution.
 
-3. **Actualización de rutas:**
-   - Actualizado `setup_environment.sh` para reflejar la nueva estructura.
-
-## Título del commit
-`Reorganizar estructura del repositorio para mayor claridad y optimización`
-
-## Contenido del commit
-- Reorganización de los scripts de instalación en `scripts/install/`.
-- Reorganización de los archivos de configuración en `config/`.
-- Actualización de rutas en `setup_environment.sh`.
-- Creación de `cleanup_notes.md` para documentar los cambios.
+### Changes:
+1. Added a function `execute_scripts` to handle the execution of installation scripts.
+2. Ensured that the order of execution remains unchanged.
+3. Improved logging with color-coded messages for better visibility.
