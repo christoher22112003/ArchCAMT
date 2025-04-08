@@ -10,6 +10,9 @@ NC='\033[0m' # Sin color
 LOG_DIR="$(dirname "$0")/../logs"
 mkdir -p "$LOG_DIR"
 
+# Habilitar el repositorio multilib
+execute_command "sudo sed -i '/\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"
+
 # Función para ejecutar comandos con mensajes de éxito/error
 execute_command() {
     local command="$1"
@@ -52,9 +55,9 @@ execute_command "sudo systemctl enable NetworkManager"
 execute_command "sudo systemctl start NetworkManager"
 
 # Conectar a redes Wi-Fi
-execute_command "nmcli dev wifi connect 'Christopher Muzo' password '1850249820'"
-execute_command "nmcli dev wifi connect 'MinosÉacoRadamantis' password '7t&A9Mc7ddr@k$'"
-execute_command "nmcli dev wifi connect 'PUCESA' password 'PUCEWIFI2015'"
+#execute_command "nmcli dev wifi connect 'Christopher Muzo' password '1850249820'"
+#execute_command "nmcli dev wifi connect 'MinosÉacoRadamantis' password '7t&A9Mc7ddr@k$'"
+#execute_command "nmcli dev wifi connect 'PUCESA' password 'PUCEWIFI2015'"
 
 # Instalar pavucontrol y blueman
 if ! is_installed "pavucontrol" && ! is_installed "blueman"; then
@@ -62,9 +65,6 @@ if ! is_installed "pavucontrol" && ! is_installed "blueman"; then
 else
     echo -e "${GREEN}pavucontrol y blueman ya están instalados.${NC}"
 fi
-
-# Habilitar el repositorio multilib
-execute_command "sudo sed -i '/\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"
 
 # Instalar Steam
 if ! is_installed "steam"; then
@@ -81,10 +81,10 @@ else
 fi
 
 # Instalar Visual Studio Code
-if ! is_installed "visual-studio-code-bin"; then
-    execute_command "paru -S --noconfirm visual-studio-code-bin"
-else
-    echo -e "${GREEN}Visual Studio Code ya está instalado.${NC}"
-fi
+#if ! is_installed "visual-studio-code-bin"; then
+#    execute_command "paru -S --noconfirm visual-studio-code-bin"
+#else
+#   echo -e "${GREEN}Visual Studio Code ya está instalado.${NC}"
+#i
 
 echo -e "${GREEN}Todos los programas han sido procesados. Revisa los logs para ver si hubo errores.${NC}"
