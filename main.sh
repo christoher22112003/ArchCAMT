@@ -23,16 +23,49 @@ RED='\033[0;31m'
 NC='\033[0m' # Sin color
 
 # Preguntar si desea ejecutar el script
-echo -e "${YELLOW}¿Desea ejecutar el script de configuración del entorno? (s/n)${NC}"
+echo -e "${YELLOW}¿Desea ejecutar el script de configuración del entorno? (y/n)${NC}"
 read -r respuesta
 
-if [[ $respuesta != "s" ]]; then
+if [[ $respuesta != "y" ]]; then
     echo -e "${RED}Ejecución cancelada.${NC}"
     exit 1
 fi
 
 # Obtener el nombre de usuario actual
 USER=$(whoami)
+
+# Dar permisos de ejecución a los scripts de instalación
+chmod +x /home/$USER/ArchCAMT/scripts/install/*.sh
+
+# Ejecutar los scripts de instalación en orden
+execute_scripts "/home/$USER/ArchCAMT/scripts/install"
+
+# Ejecutar el script consolidado
+echo -e "${YELLOW}Ejecutando el script de instalación consolidado...${NC}"
+if bash /home/$USER/ArchCAMT/scripts/install/install_all.sh; then
+    echo -e "${GREEN}Script de instalación consolidado ejecutado correctamente.${NC}"
+else
+    echo -e "${RED}Error al ejecutar el script de instalación consolidado.${NC}"
+    exit 1
+fi
+
+# Ejecutar RiceInstaller
+echo -e "${YELLOW}Ejecutando RiceInstaller...${NC}"
+if bash /home/$USER/ArchCAMT/scripts/install/rice_installer.sh; then
+    echo -e "${GREEN}RiceInstaller ejecutado correctamente.${NC}"
+else
+    echo -e "${RED}Error al ejecutar RiceInstaller.${NC}"
+    exit 1
+fi
+
+# Ejecutar configuración de LightDM
+echo -e "${YELLOW}Ejecutando configuración de LightDM...${NC}"
+if bash /home/$USER/ArchCAMT/scripts/install/lightdm_setup.sh; then
+    echo -e "${GREEN}LightDM configurado correctamente.${NC}"
+else
+    echo -e "${RED}Error al configurar LightDM.${NC}"
+    exit 1
+fi
 
 # Ruta de origen y destino
 SRC="$(pwd)/config/sxhkdrc"
@@ -71,36 +104,3 @@ execute_scripts() {
         fi
     done
 }
-
-# Dar permisos de ejecución a los scripts de instalación
-chmod +x /home/$USER/ArchCAMT/scripts/install/*.sh
-
-# Ejecutar los scripts de instalación en orden
-execute_scripts "/home/$USER/ArchCAMT/scripts/install"
-
-# Ejecutar el script consolidado
-echo -e "${YELLOW}Ejecutando el script de instalación consolidado...${NC}"
-if bash /home/$USER/ArchCAMT/scripts/install/install_all.sh; then
-    echo -e "${GREEN}Script de instalación consolidado ejecutado correctamente.${NC}"
-else
-    echo -e "${RED}Error al ejecutar el script de instalación consolidado.${NC}"
-    exit 1
-fi
-
-# Ejecutar RiceInstaller
-echo -e "${YELLOW}Ejecutando RiceInstaller...${NC}"
-if bash /home/$USER/ArchCAMT/scripts/install/rice_installer.sh; then
-    echo -e "${GREEN}RiceInstaller ejecutado correctamente.${NC}"
-else
-    echo -e "${RED}Error al ejecutar RiceInstaller.${NC}"
-    exit 1
-fi
-
-# Ejecutar configuración de LightDM
-echo -e "${YELLOW}Ejecutando configuración de LightDM...${NC}"
-if bash /home/$USER/ArchCAMT/scripts/install/lightdm_setup.sh; then
-    echo -e "${GREEN}LightDM configurado correctamente.${NC}"
-else
-    echo -e "${RED}Error al configurar LightDM.${NC}"
-    exit 1
-fi
