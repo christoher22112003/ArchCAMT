@@ -52,7 +52,11 @@ if ! is_installed "nvidia" && ! is_installed "nvidia-settings"; then
     NVIDIA_OPTIONS="$1"
 
     # Instalar con las opciones proporcionadas
-    execute_command "sudo pacman -S --noconfirm nvidia nvidia-settings $NVIDIA_OPTIONS"
+    if [ -z "$NVIDIA_OPTIONS" ]; then
+        execute_command "sudo pacman -S --noconfirm nvidia nvidia-settings"
+    else
+        execute_command "sudo pacman -S --noconfirm nvidia nvidia-settings $NVIDIA_OPTIONS"
+    fi
 else
     echo -e "${GREEN}NVIDIA drivers y configuración ya están instalados.${NC}"
 fi
@@ -82,7 +86,9 @@ fi
 
 # Instalar Steam
 if ! is_installed "steam"; then
-    execute_command "echo -e '2\n' | sudo pacman -S --noconfirm steam"
+    # Pasar la entrada directamente desde main.sh
+    STEAM_CHOICE="$2"
+    execute_command "echo -e '$STEAM_CHOICE\n' | sudo pacman -S --noconfirm steam"
 else
     echo -e "${GREEN}Steam ya está instalado.${NC}"
 fi

@@ -48,10 +48,23 @@ fi
 
 # Preguntar por las opciones de NVIDIA
 NVIDIA_OPTIONS=""
-read -p "Ingrese las opciones para la instalación de NVIDIA (ej: --needed --rebuild): " NVIDIA_OPTIONS
+read -p "Ingrese las opciones para la instalación de NVIDIA (ej: --needed --rebuild, dejar en blanco para default): " NVIDIA_OPTIONS
 
-# Ejecutar install_all.sh con las opciones de NVIDIA
-./scripts/install/install_all.sh "$NVIDIA_OPTIONS"
+# Preguntar por la opción de Steam
+STEAM_CHOICE=""
+echo -e "${YELLOW}Opciones para la instalación de Steam:${NC}"
+echo "1: steam"
+echo "2: steam-native-runtime"
+read -p "Seleccione una opción para la instalación de Steam (1 o 2): " STEAM_CHOICE
+
+# Validar la opción de Steam
+while [[ "$STEAM_CHOICE" != "1" && "$STEAM_CHOICE" != "2" ]]; do
+  echo "Opción inválida. Por favor, seleccione 1 o 2."
+  read -p "Seleccione una opción para la instalación de Steam (1 o 2): " STEAM_CHOICE
+done
+
+# Ejecutar install_all.sh con las opciones de NVIDIA y Steam
+./scripts/install/install_all.sh "$NVIDIA_OPTIONS" "$STEAM_CHOICE"
 
 # Instalar Network Manager y su applet
 if ! is_installed "networkmanager" && ! is_installed "network-manager-applet"; then
@@ -74,13 +87,6 @@ if ! is_installed "pavucontrol" && ! is_installed "blueman"; then
     execute_command "sudo pacman -S --noconfirm pavucontrol blueman"
 else
     echo -e "${GREEN}pavucontrol y blueman ya están instalados.${NC}"
-fi
-
-# Instalar Steam
-if ! is_installed "steam"; then
-    execute_command "echo -e '2\n' | sudo pacman -S --noconfirm steam"
-else
-    echo -e "${GREEN}Steam ya está instalado.${NC}"
 fi
 
 # Instalar asusctl
