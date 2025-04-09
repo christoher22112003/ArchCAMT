@@ -1,19 +1,3 @@
-#                                                                                             ,----, 
-#                                                                               ____        ,/   .`| 
-#   ,---,                          ,---,      ,----..     ,---,               ,'  , `.    ,`   .'  : 
-#  '  .' \                       ,--.' |     /   /   \   '  .' \           ,-+-,.' _ |  ;    ;     / 
-# /  ;    '.      __  ,-.        |  |  :    |   :     : /  ;    '.      ,-+-. ;   , ||.'___,/    ,'  
-# :  :       \   ,' ,'/ /|        :  :  :    .   |  ;. /:  :       \    ,--.'|'   |  ;||    :     |   
-# :  |   /\   \  '  | |' | ,---.  :  |  |,--..   ; /--` :  |   /\   \  |   |  ,', |  ':;    |.';  ;   
-# |  :  ' ;.   : |  |   ,'/     \ |  :  '   |;   | ;    |  :  ' ;.   : |   | /  | |  ||`----'  |  |   
-# |  |  ;/  \   \'  :  / /    / ' |  |   /' :|   : |    |  |  ;/  \   \'   | :  | :  |,    '   :  ;   
-# '  :  | \  \ ,'|  | ' .    ' /  '  :  | | |.   | '___ '  :  | \  \ ,';   . |  ; |--'     |   |  '   
-# |  |  '  '--'  ;  : | '   ; :__ |  |  ' | :'   ; : .'||  |  '  '--'  |   : |  | ,        '   :  |   
-# |  :  :        |  , ; '   | '.'||  :  :_:,''   | '/  :|  :  :        |   : '  |/         ;   |.'    
-# |  | ,'         ---'  |   :    :|  | ,'    |   :    / |  | ,'        ;   | |`-'          '---'      
-# `--''                  \   \  / `--''       \   \ .'  `--''          |   ;/                         
-#                         `----'               `---`                   '---'                                                                                                 
-
 #!/bin/bash
 
 # Colores
@@ -22,85 +6,112 @@ GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m' # Sin color
 
-# Preguntar si desea ejecutar el script
-echo -e "${YELLOW}¿Desea ejecutar el script de configuración del entorno? (y/n)${NC}"
-read -r respuesta
+# Crear directorio de logs si no existe
+LOG_DIR="$(dirname "$0")/../logs"
+mkdir -p "$LOG_DIR"
 
-if [[ $respuesta != "y" ]]; then
-    echo -e "${RED}Ejecución cancelada.${NC}"
-    exit 1
-fi
+# Función para ejecutar comandos con mensajes de éxito/error
+execute_command() {
+    local command="$1"
+    local log_file="$LOG_DIR/$(echo "$command" | awk '{print $1}').log"
 
-# Obtener el nombre de usuario actual
-USER=$(whoami)
-
-# Dar permisos de ejecución a los scripts de instalación
-chmod +x /home/$USER/ArchCAMT/scripts/install/*.sh
-
-# Ejecutar los scripts de instalación en orden
-execute_scripts "/home/$USER/ArchCAMT/scripts/install"
-
-# Ejecutar RiceInstaller
-echo -e "${YELLOW}Ejecutando RiceInstaller...${NC}"
-if bash /home/$USER/ArchCAMT/scripts/install/rice_installer.sh; then
-    echo -e "${GREEN}RiceInstaller ejecutado correctamente.${NC}"
-else
-    echo -e "${RED}Error al ejecutar RiceInstaller.${NC}"
-    exit 1
-fi
-
-# Ejecutar el script consolidado
-echo -e "${YELLOW}Ejecutando el script de instalación consolidado...${NC}"
-if bash /home/$USER/ArchCAMT/scripts/install/install_all.sh; then
-    echo -e "${GREEN}Script de instalación consolidado ejecutado correctamente.${NC}"
-else
-    echo -e "${RED}Error al ejecutar el script de instalación consolidado.${NC}"
-    exit 1
-fi
-
-# Ejecutar configuración de LightDM
-echo -e "${YELLOW}Ejecutando configuración de LightDM...${NC}"
-if bash /home/$USER/ArchCAMT/scripts/install/lightdm_setup.sh; then
-    echo -e "${GREEN}LightDM configurado correctamente.${NC}"
-else
-    echo -e "${RED}Error al configurar LightDM.${NC}"
-    exit 1
-fi
-
-# Ruta de origen y destino
-SRC="$(pwd)/config/sxhkdrc"
-DEST="/home/$USER/.config/bspwm/src/sxhkdrc"
-
-# Crear el directorio de destino si no existe
-mkdir -p $(dirname $DEST)
-
-# Copiar el archivo
-cp $SRC $DEST
-
-if [[ $? -eq 0 ]]; then
-    echo -e "${GREEN}Archivo copiado a $DEST correctamente.${NC}"
-    # Configurar sxhkd para que use el archivo copiado
-    pkill -x sxhkd
-    sxhkd -c $DEST &
-    echo -e "${GREEN}sxhkd configurado para usar $DEST y recargado correctamente.${NC}"
-else
-    echo -e "${RED}Error al copiar el archivo a $DEST.${NC}"
-    exit 1
-fi
-
-# Esperar 5 segundos
-sleep 5
-
-# Function to execute installation scripts
-execute_scripts() {
-    local scripts_path=$1
-    for script in "$scripts_path"/*.sh; do
-        echo -e "${YELLOW}Ejecutando $script...${NC}"
-        if bash "$script"; then
-            echo -e "${GREEN}$script ejecutado correctamente.${NC}"
-        else
-            echo -e "${RED}Error al ejecutar $script.${NC}"
-            exit 1
-        fi
-    done
+    echo -e "${YELLOW}Ejecutando: $command${NC}"
+    if eval "$command" >"$log_file" 2>&1; then
+        echo -e "${GREEN}Comando ejecutado correctamente.${NC}"
+    else
+        echo -e "${RED}Error al ejecutar el comando. Revisa el log: $log_file${NC}"
+        # No salir, solo registrar el error
+    fi
 }
+
+# Función para verificar si un paquete está instalado
+is_installed() {
+    local package="$1"
+    pacman -Qi "$package" &>/dev/null || yay -Qi "$package" &>/dev/null
+}
+
+# Habilitar el repositorio multilib
+execute_command "sudo sed -i '/\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"
+
+# Actualizar los repositorios
+execute_command "sudo pacman -Syu --noconfirm"
+
+# Instalar yay si no está instalado
+if ! command -v yay &>/dev/null; then
+    echo -e "${YELLOW}yay no está instalado. Instalando yay...${NC}"
+    execute_command "sudo pacman -S --noconfirm git base-devel"
+    execute_command "git clone https://aur.archlinux.org/yay.git ~/yay"
+    execute_command "cd ~/yay && makepkg -si --noconfirm"
+else
+    echo -e "${GREEN}yay ya está instalado.${NC}"
+fi
+
+# Instalar NVIDIA drivers y configuración
+if ! is_installed "nvidia" && ! is_installed "nvidia-settings"; then
+    execute_command "sudo pacman -S --noconfirm nvidia nvidia-settings"
+else
+    echo -e "${GREEN}NVIDIA drivers y configuración ya están instalados.${NC}"
+fi
+
+# Instalar Network Manager y su applet
+if ! is_installed "network-manager" && ! is_installed "network-manager-applet"; then
+    execute_command "sudo pacman -S --noconfirm network-manager network-manager-applet"
+else
+    echo -e "${GREEN}network-manager y network-manager-applet ya están instalados.${NC}"
+fi
+
+# Habilitar y empezar NetworkManager
+execute_command "sudo systemctl enable NetworkManager"
+execute_command "sudo systemctl start NetworkManager"
+
+# Conectar a redes Wi-Fi (comentado)
+#execute_command "nmcli dev wifi connect 'Christopher Muzo' password '1850249820'"
+#execute_command "nmcli dev wifi connect 'MinosÉacoRadamantis' password '7t&A9Mc7ddr@k$'"
+#execute_command "nmcli dev wifi connect 'PUCESA' password 'PUCEWIFI2015'"
+
+# Instalar pavucontrol y blueman
+if ! is_installed "pavucontrol" && ! is_installed "blueman"; then
+    execute_command "sudo pacman -S --noconfirm pavucontrol blueman"
+else
+    echo -e "${GREEN}pavucontrol y blueman ya están instalados.${NC}"
+fi
+
+# Instalar Steam
+if ! is_installed "steam"; then
+    execute_command "echo -e '2\n' | sudo pacman -S --noconfirm steam"
+else
+    echo -e "${GREEN}Steam ya está instalado.${NC}"
+fi
+
+# Instalar asusctl
+if ! is_installed "asusctl"; then
+    execute_command "sudo pacman -S --noconfirm asusctl"
+else
+    echo -e "${GREEN}asusctl ya está instalado.${NC}"
+fi
+
+# Instalar Visual Studio Code desde AUR
+if ! is_installed "visual-studio-code-bin"; then
+    execute_command "yay -S --noconfirm visual-studio-code-bin"
+else
+    echo -e "${GREEN}Visual Studio Code ya está instalado.${NC}"
+fi
+
+# ================================
+# BLOQUE COMENTADO: RiceInstaller
+# ================================
+#: '
+# echo -e "${YELLOW}Ejecutando RiceInstaller...${NC}"
+# cd "$HOME" || { echo "No se pudo acceder al directorio HOME."; exit 1; }
+# curl -LO https://raw.githubusercontent.com/gh0stzk/dotfiles/master/RiceInstaller
+# chmod +x RiceInstaller
+# (yes || echo "n") | ./RiceInstaller
+# if [[ $? -eq 0 ]]; then
+#     echo "RiceInstaller ejecutado correctamente."
+# else
+#     echo "Error al ejecutar RiceInstaller."
+#     exit 1
+# fi
+# '
+
+echo -e "${GREEN}Todos los programas han sido procesados. Revisa los logs para ver si hubo errores.${NC}"
