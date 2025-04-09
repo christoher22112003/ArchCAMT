@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Moverse al directorio HOME
+cd "$HOME" || { echo "No se pudo acceder al directorio HOME."; exit 1; }
+
 # Descargar RiceInstaller
 curl -LO https://raw.githubusercontent.com/gh0stzk/dotfiles/master/RiceInstaller
 chmod +x RiceInstaller
