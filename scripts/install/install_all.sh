@@ -48,7 +48,11 @@ fi
 
 # Instalar NVIDIA drivers y configuración
 if ! is_installed "nvidia" && ! is_installed "nvidia-settings"; then
-    execute_command "sudo pacman -S --noconfirm nvidia nvidia-settings"
+    # Recibir las respuestas como parámetros
+    NVIDIA_OPTIONS="$1"
+
+    # Instalar con las opciones proporcionadas
+    execute_command "sudo pacman -S --noconfirm nvidia nvidia-settings $NVIDIA_OPTIONS"
 else
     echo -e "${GREEN}NVIDIA drivers y configuración ya están instalados.${NC}"
 fi

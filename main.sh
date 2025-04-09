@@ -46,18 +46,18 @@ else
     echo -e "${GREEN}yay ya está instalado.${NC}"
 fi
 
-# Instalar NVIDIA drivers y configuración
-if ! is_installed "nvidia" && ! is_installed "nvidia-settings"; then
-    execute_command "sudo pacman -S --noconfirm nvidia nvidia-settings"
-else
-    echo -e "${GREEN}NVIDIA drivers y configuración ya están instalados.${NC}"
-fi
+# Preguntar por las opciones de NVIDIA
+NVIDIA_OPTIONS=""
+read -p "Ingrese las opciones para la instalación de NVIDIA (ej: --needed --rebuild): " NVIDIA_OPTIONS
+
+# Ejecutar install_all.sh con las opciones de NVIDIA
+./scripts/install/install_all.sh "$NVIDIA_OPTIONS"
 
 # Instalar Network Manager y su applet
-if ! is_installed "network-manager" && ! is_installed "network-manager-applet"; then
-    execute_command "sudo pacman -S --noconfirm network-manager network-manager-applet"
+if ! is_installed "networkmanager" && ! is_installed "network-manager-applet"; then
+    execute_command "sudo pacman -S --noconfirm networkmanager network-manager-applet"
 else
-    echo -e "${GREEN}network-manager y network-manager-applet ya están instalados.${NC}"
+    echo -e "${GREEN}networkmanager y network-manager-applet ya están instalados.${NC}"
 fi
 
 # Habilitar y empezar NetworkManager
