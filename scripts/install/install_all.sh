@@ -10,9 +10,6 @@ NC='\033[0m' # Sin color
 LOG_DIR="$(dirname "$0")/../logs"
 mkdir -p "$LOG_DIR"
 
-# Habilitar el repositorio multilib
-execute_command "sudo sed -i '/\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"
-
 # Función para ejecutar comandos con mensajes de éxito/error
 execute_command() {
     local command="$1"
@@ -33,8 +30,21 @@ is_installed() {
     pacman -Qi "$package" &>/dev/null
 }
 
+# Habilitar el repositorio multilib
+execute_command "sudo sed -i '/\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"
+
 # Actualizar los repositorios
 execute_command "sudo pacman -Syu --noconfirm"
+
+# Instalar yay si no está instalado
+if ! command -v yay &>/dev/null; then
+    echo -e "${YELLOW}yay no está instalado. Procediendo con la instalación...${NC}"
+    execute_command "sudo pacman -S --noconfirm base-devel git"
+    execute_command "git clone https://aur.archlinux.org/yay.git ~/yay"
+    execute_command "cd ~/yay && makepkg -si --noconfirm"
+else
+    echo -e "${GREEN}yay ya está instalado.${NC}"
+fi
 
 # Instalar NVIDIA drivers y configuración
 if ! is_installed "nvidia" && ! is_installed "nvidia-settings"; then
@@ -54,10 +64,10 @@ fi
 execute_command "sudo systemctl enable NetworkManager"
 execute_command "sudo systemctl start NetworkManager"
 
-# Conectar a redes Wi-Fi
-#execute_command "nmcli dev wifi connect 'Christopher Muzo' password '1850249820'"
-#execute_command "nmcli dev wifi connect 'MinosÉacoRadamantis' password '7t&A9Mc7ddr@k$'"
-#execute_command "nmcli dev wifi connect 'PUCESA' password 'PUCEWIFI2015'"
+# Conectar a redes Wi-Fi (descomenta si deseas conectar automáticamente)
+# execute_command "nmcli dev wifi connect 'Christopher Muzo' password '1850249820'"
+# execute_command "nmcli dev wifi connect 'MinosÉacoRadamantis' password '7t&A9Mc7ddr@k$'"
+# execute_command "nmcli dev wifi connect 'PUCESA' password 'PUCEWIFI2015'"
 
 # Instalar pavucontrol y blueman
 if ! is_installed "pavucontrol" && ! is_installed "blueman"; then
@@ -80,11 +90,11 @@ else
     echo -e "${GREEN}asusctl ya está instalado.${NC}"
 fi
 
-# Instalar Visual Studio Code
-#if ! is_installed "visual-studio-code-bin"; then
-#    execute_command "paru -S --noconfirm visual-studio-code-bin"
-#else
-#   echo -e "${GREEN}Visual Studio Code ya está instalado.${NC}"
-#i
+# Instalar Visual Studio Code desde AUR con yay
+if ! is_installed "visual-studio-code-bin"; then
+    execute_command "yay -S --noconfirm visual-studio-code-bin"
+else
+    echo -e "${GREEN}Visual Studio Code ya está instalado.${NC}"
+fi
 
 echo -e "${GREEN}Todos los programas han sido procesados. Revisa los logs para ver si hubo errores.${NC}"
